@@ -1,6 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, flash, redirect, url_for
+from forms import RegistrationForm, LoginForm
+
+
+
 
 app = Flask(__name__)
+
+
+app.config['SECRET_KEY'] = 'df20cd524044f455dc80007d4bb3f328'
+
+
+
 
 posts = [
 {
@@ -18,11 +28,9 @@ posts = [
 }
 
 ]
-
-
 @app.route('/')
 @app.route('/home')
-def hello():
+def home():
     return render_template('home.html', posts=posts)
 
 @app.route('/about')
@@ -30,9 +38,18 @@ def about():
     return render_template('about.html', title='About')
 
 
+@app.route('/register')
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Acoount created {form.username.data}!', 'success')
+        redirect(url_for('home'))
+    return render_template('register.html', title = 'Register', form = form)
 
-
-
+@app.route('/login')
+def login():
+    form = LoginForm()
+    return render_template('login.html', title = 'Login', form = form)
 
 
 #can avoid using the if __name__ == "__main__": block in production
