@@ -1,0 +1,13 @@
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+
+
+
+now for db creation of sql lite, theres some weird function- need to fix
+so u use
+
+'from main import app, db'
+'from main.models import User, Post'
+
+'with app.app_context():'
+'    db.create_all()
