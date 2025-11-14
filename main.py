@@ -12,11 +12,8 @@ app.config['SECRET_KEY'] = 'df20cd524044f455dc80007d4bb3f328'
 
 
 
-<<<<<<< HEAD
+
 posts = [ 
-=======
-posts = [
->>>>>>> d610aee1a2440cf2685d8c62ec8e2cc4ee1497cd
 {
     'author': 'John Doe',
     'title': 'Blog Post 1',
@@ -41,7 +38,7 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
-<<<<<<< HEAD
+
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -60,7 +57,7 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='login', form=form)
-=======
+
 
 @app.route('/register')
 def register():
@@ -74,7 +71,7 @@ def register():
 def login():
     form = LoginForm()
     return render_template('login.html', title = 'Login', form = form)
->>>>>>> d610aee1a2440cf2685d8c62ec8e2cc4ee1497cd
+
 
 
 #can avoid using the if __name__ == "__main__": block in production
