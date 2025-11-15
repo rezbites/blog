@@ -3,3 +3,4 @@ txt/
 .venv/
 .env/
 instance/
+*.db  
