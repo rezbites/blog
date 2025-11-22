@@ -5,3 +5,10 @@ txt/
 instance/
 site.db
 *.db  
+
+
+# Ignore all files in profile_pics
+main/static/profile_pics/*
+
+# But keep the folder itself
+!main/static/profile_pics/.gitkeep
