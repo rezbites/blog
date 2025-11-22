@@ -5,6 +5,7 @@ from main.models import User, Post
 
 
 #doing this to avoid wrapping every time we use shell, so to access db, User, Post directly we can type flask shell instead of python
+#$env:FLASK_APP = "run.py" put this first before using flask shell command in terminal
 @app.shell_context_processor
 def make_shell_context():
     return {'db': db, 'User': User, 'Post': Post}
