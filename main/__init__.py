@@ -14,5 +14,8 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
+# ✅ Create tables automatically when app starts
+with app.app_context():
+    db.create_all()
 
 from main import routes
