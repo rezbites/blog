@@ -1,11 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: VPC + 2 Public + 2 Private Subnets + ECS Fargate (Public) + RDS (Public) + ECR Pull
+Description: VPC + 2 Public + 2 Private Subnets + ECR + ECS Fargate (Public) + RDS (Public). ECS DesiredCount=0 to avoid rollback.
 
 Parameters:
-  ECRImageUri:
-    Type: String
-    Description: "Full ECR Image URI (example: 829408051205.dkr.ecr.ap-south-2.amazonaws.com/blogdemo:latest)"
-
   DBUsername:
     Type: String
     Default: admin
@@ -14,7 +10,7 @@ Parameters:
   DBPassword:
     Type: String
     NoEcho: true
-    Description: "RDS Master Password (8+ chars)"
+    Description: "RDS Master Password (8+ chars, avoid / @ \" and spaces)"
 
 Resources:
 
@@ -179,6 +175,16 @@ Resources:
       MultiAZ: false
 
   # ------------------------
+  # ECR Repository (Created Automatically)
+  # ------------------------
+  BlogDemoECRRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: blogdemo
+      ImageScanningConfiguration:
+        ScanOnPush: true
+
+  # ------------------------
   # ECS Cluster
   # ------------------------
   ECSCluster:
@@ -229,7 +235,7 @@ Resources:
       ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
       ContainerDefinitions:
         - Name: blogdemo-container
-          Image: !Ref ECRImageUri
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${BlogDemoECRRepo}:latest"
           Essential: true
           PortMappings:
             - ContainerPort: 5000
@@ -249,7 +255,7 @@ Resources:
               awslogs-stream-prefix: ecs
 
   # ------------------------
-  # ECS Service (PUBLIC Subnets)
+  # ECS Service (PUBLIC Subnets) - DesiredCount = 0
   # ------------------------
   ECSService:
     Type: AWS::ECS::Service
@@ -258,7 +264,7 @@ Resources:
       ServiceName: blogdemo-service
       Cluster: !Ref ECSCluster
       LaunchType: FARGATE
-      DesiredCount: 1
+      DesiredCount: 0
       TaskDefinition: !Ref TaskDefinition
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -301,3 +307,7 @@ Outputs:
   ECSServiceName:
     Description: ECS Service Name
     Value: !Ref ECSService
+
+  ECRRepositoryURI:
+    Description: ECR Repository URI
+    Value: !GetAtt BlogDemoECRRepo.RepositoryUri
